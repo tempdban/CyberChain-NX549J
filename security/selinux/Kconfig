@@ -131,3 +131,13 @@ config SECURITY_SELINUX_POLICYDB_VERSION_MAX_VALUE
 	  installed under /etc/selinux/$SELINUXTYPE/policy, where
 	  SELINUXTYPE is defined in your /etc/selinux/config.
 
+config SECURITY_SELINUX_PERMISSIVE_BY_DEFAULT
+	bool "NSA SELinux Permisive mode by default"
+	depends on SECURITY_SELINUX_DEVELOP
+	default n
+	help
+		This option switches the default mode of SELinux module to permissive.
+		SELinux will boot up in this mode until it is changed from the
+		userspace.
+
+		Leave it default, if you want SELinux to start in Enforcing mode.
