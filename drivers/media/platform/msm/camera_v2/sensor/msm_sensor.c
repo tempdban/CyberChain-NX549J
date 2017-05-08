@@ -359,6 +359,31 @@ static int msm_sensor_config32(struct msm_sensor_ctrl_t *s_ctrl,
 	mutex_lock(s_ctrl->msm_sensor_mutex);
 	CDBG("%s:%d %s cfgtype = %d\n", __func__, __LINE__,
 		s_ctrl->sensordata->sensor_name, cdata->cfgtype);
+
+        //ZTEMT: guxiaodong add for sensor temp ----start
+        #ifdef ZTE_IMX258_TEMPERATURE_READ
+        if(cdata->sen_temp_sign == 1 && !strcmp("imx258_main",s_ctrl->sensordata->sensor_name))//huaweifeng modify 
+        {
+            uint16_t local_data = 0;
+            CDBG("gxd start to write 0x0138");
+            rc = s_ctrl->sensor_i2c_client->i2c_func_tbl->i2c_write(
+                                                                              s_ctrl->sensor_i2c_client,
+                                                                              0x0138,0x01,MSM_CAMERA_I2C_BYTE_DATA);
+            CDBG("gxd start to read 0x013a");
+            rc = s_ctrl->sensor_i2c_client->i2c_func_tbl->i2c_read(
+                                                                              s_ctrl->sensor_i2c_client,
+                                                                              0x013a,
+                                                                              &local_data, MSM_CAMERA_I2C_BYTE_DATA);
+            cdata->sensor_temp = local_data;
+            CDBG("gxd local_data = %d\n",local_data);
+            cdata->sen_temp_sign = 0;
+
+            mutex_unlock(s_ctrl->msm_sensor_mutex);
+	    return 0;
+        }
+        #endif
+       //ZTEMT: guxiaodong add for sensor temp ----end
+
 	switch (cdata->cfgtype) {
 	case CFG_GET_SENSOR_INFO:
 		memcpy(cdata->cfg.sensor_info.sensor_name,

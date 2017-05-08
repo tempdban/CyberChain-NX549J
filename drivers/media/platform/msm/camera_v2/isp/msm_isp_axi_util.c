@@ -2201,9 +2201,11 @@ static int msm_isp_update_stream_bandwidth(struct vfe_device *vfe_dev)
 		}
 	}
 	total_bandwidth = total_pix_bandwidth + total_rdi_bandwidth;
+	//ZTEMT: li.bin223 modify for enlarge bandwidth --start
 	rc = msm_isp_update_bandwidth(ISP_VFE0 + vfe_dev->pdev->id,
-		(total_bandwidth + vfe_dev->hw_info->min_ab),
-		(total_bandwidth + vfe_dev->hw_info->min_ib));
+		(total_bandwidth + MSM_ISP_MIN_AB),
+		(total_bandwidth + MSM_ISP_MIN_IB));
+	//ZTEMT: li.bin223 modify for enlarge bandwidth --end
 
 	if (rc < 0)
 		pr_err("%s: update failed\n", __func__);
@@ -3411,6 +3413,12 @@ int msm_isp_update_axi_stream(struct vfe_device *vfe_dev, void *arg)
 		}
 	}
 
+    // ZTEMT: fuyipeng modify for framedrop of HDR -----start
+	for (i = 0; i < update_cmd->num_streams; i++) {
+		update_info = &update_cmd->update_info[i];
+		stream_info = &axi_data->stream_info[
+				HANDLE_TO_IDX(update_info->stream_handle)];
+
 	switch (update_cmd->update_type) {
 	case ENABLE_STREAM_BUF_DIVERT:
 		for (i = 0; i < update_cmd->num_streams; i++) {
@@ -3637,7 +3645,8 @@ int msm_isp_update_axi_stream(struct vfe_device *vfe_dev, void *arg)
 		pr_err("%s: Invalid update type\n", __func__);
 		return -EINVAL;
 	}
-
+	}
+    // ZTEMT: fuyipeng modify for framedrop of HDR -----end
 	return rc;
 }
 

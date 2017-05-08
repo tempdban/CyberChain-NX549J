@@ -85,6 +85,10 @@ TARGET_PREBUILT_INT_KERNEL := $(KERNEL_OUT)/arch/$(KERNEL_ARCH)/boot/zImage
 endif
 endif
 
+ZTEMT_DTS_NAME:=$(DTS_NAME)
+export ZTEMT_DTS_NAME
+
+
 ifeq ($(TARGET_KERNEL_APPEND_DTB), true)
 $(info Using appended DTB)
 TARGET_PREBUILT_INT_KERNEL := $(TARGET_PREBUILT_INT_KERNEL)-dtb
@@ -146,6 +150,15 @@ $(KERNEL_HEADERS_INSTALL): $(KERNEL_OUT)
 			echo "Used a different defconfig for header generation"; \
 			$(hide) rm -f $(BUILD_ROOT_LOC)$(KERNEL_CONFIG); \
 			$(MAKE) -C $(TARGET_KERNEL_SOURCE) O=$(BUILD_ROOT_LOC)$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(KERNEL_CROSS_COMPILE) $(KERNEL_DEFCONFIG); fi
+			if [ "$(TARGET_NUBIA_BUILD_TYPE)" != "release" ]; then \
+			echo -e "\033[01;32m ZTEMT need config debug macro , TARGET_NUBIA_BUILD_TYPE=$(TARGET_NUBIA_BUILD_TYPE)...\033[0m"; \
+			echo "CONFIG_MSM_DEBUG_LAR_UNLOCK=y" >> $(KERNEL_CONFIG); \
+			echo "CONFIG_CORESIGHT_DBGUI=y" >> $(KERNEL_CONFIG); \
+			echo "CONFIG_MSM_RTB=y" >> $(KERNEL_CONFIG); \
+			echo "CONFIG_MSM_RTB_SEPARATE_CPUS=y" >> $(KERNEL_CONFIG); \
+			else \
+			echo -e "\033[01;32m ZTEMT don't need config debug macro , TARGET_NUBIA_BUILD_TYPE=$(TARGET_NUBIA_BUILD_TYPE)...\033[0m"; \
+			fi
 	$(hide) if [ ! -z "$(KERNEL_CONFIG_OVERRIDE)" ]; then \
 			echo "Overriding kernel config with '$(KERNEL_CONFIG_OVERRIDE)'"; \
 			echo $(KERNEL_CONFIG_OVERRIDE) >> $(KERNEL_OUT)/.config; \

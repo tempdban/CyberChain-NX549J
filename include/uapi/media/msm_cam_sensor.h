@@ -6,6 +6,9 @@
 
 #include <linux/types.h>
 #include <linux/i2c.h>
+//ZTEMT: li.bin223 20150421 add for avoid kernel crash ----start
+#define	MSM_ACTUATOT_MAX_NAME (32)
+//ZTEMT: li.bin223 20150421 add for avoid kernel crash ----end
 
 #define I2C_SEQ_REG_SETTING_MAX   5
 
@@ -60,6 +63,17 @@ enum msm_sensor_resolution_t {
 	MSM_SENSOR_RES_5,
 	MSM_SENSOR_RES_6,
 	MSM_SENSOR_RES_7,
+    // ZTEMT: fuyipeng add the res -----start
+	MSM_SENSOR_RES_8, 
+	MSM_SENSOR_RES_9,
+	MSM_SENSOR_RES_10,
+	MSM_SENSOR_RES_11,
+	MSM_SENSOR_RES_12,
+	MSM_SENSOR_RES_13,
+	MSM_SENSOR_RES_14,
+	MSM_SENSOR_RES_15,
+	MSM_SENSOR_RES_16,
+    // ZTEMT: fuyipeng add the res -----end
 	MSM_SENSOR_INVALID_RES,
 };
 
@@ -232,6 +246,8 @@ struct sensorb_cfg_data {
 		void                         *setting;
 		struct msm_sensor_i2c_sync_params sensor_i2c_sync_params;
 	} cfg;
+        uint16_t sensor_temp;//ztemt: guxiaodong add for tmp
+        uint8_t sen_temp_sign;//ztemt: guxiaodong add for tmp
 };
 
 struct csid_cfg_data {
@@ -341,6 +357,9 @@ enum msm_actuator_cfg_type_t {
 	CFG_ACTUATOR_POWERDOWN,
 	CFG_ACTUATOR_POWERUP,
 	CFG_ACTUATOR_INIT,
+    // ZTEMT: fuyipeng add for manual AF -----start
+    CFG_SET_ACTUATOR_NAME,
+    // ZTEMT: fuyipeng add for manual AF -----end
 };
 
 struct msm_ois_opcode {
@@ -484,6 +503,7 @@ struct msm_actuator_set_position_t {
 	uint32_t hw_params;
 	uint16_t pos[MAX_NUMBER_OF_STEPS];
 	uint16_t delay[MAX_NUMBER_OF_STEPS];
+     int16_t dac_output; //jixd 20160601 add for reset optimize
 };
 
 struct msm_actuator_cfg_data {
@@ -495,6 +515,9 @@ struct msm_actuator_cfg_data {
 		struct msm_actuator_get_info_t get_info;
 		struct msm_actuator_set_position_t setpos;
 		enum af_camera_name cam_name;
+        // ZTEMT: fuyipeng add for manual AF -----start
+        char act_name[MSM_ACTUATOT_MAX_NAME];
+        // ZTEMT: fuyipeng add for manual AF -----end
 	} cfg;
 };
 

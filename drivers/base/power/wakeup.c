@@ -25,6 +25,12 @@
  */
 bool events_check_enabled __read_mostly;
 
+
+#ifdef CONFIG_ZTEMT_POWER_DEBUG
+extern bool wakeup_wake_lock_debug;
+#endif
+
+
 /* If set and the system is suspending, terminate the suspend. */
 static bool pm_abort_suspend __read_mostly;
 

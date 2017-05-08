@@ -36,6 +36,10 @@
 const char *pm_labels[] = { "mem", "standby", "freeze", NULL };
 const char *pm_states[PM_SUSPEND_MAX];
 
+#ifdef CONFIG_ZTEMT_POWER_DEBUG
+bool wakeup_wake_lock_debug = false;
+#endif
+
 static const struct platform_suspend_ops *suspend_ops;
 static const struct platform_freeze_ops *freeze_ops;
 static DECLARE_WAIT_QUEUE_HEAD(suspend_freeze_wait_head);

@@ -872,6 +872,13 @@ static void pll_db_commit_8996(struct mdss_pll_resources *pll,
 	data &= 0x03;
 	MDSS_PLL_REG_W(pll_base, DSIPHY_PLL_KVCO_COUNT2, data);
 
+	/*
+	 * tx_band = pll_postdiv
+	 * 0: divided by 1 <== for now
+	 * 1: divided by 2
+	 * 2: divided by 4
+	 * 3: divided by 8
+	 */
 	data = (((pout->pll_postdiv - 1) << 4) | pdb->in.pll_lpf_res1);
 	MDSS_PLL_REG_W(pll_base, DSIPHY_PLL_PLL_LPF2_POSTDIV, data);
 
