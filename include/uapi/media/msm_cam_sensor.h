@@ -374,12 +374,6 @@ enum msm_actuator_cfg_type_t {
     // ZTEMT: fuyipeng add for manual AF -----end
 };
 
-struct msm_ois_opcode {
-	uint32_t prog;
-	uint32_t coeff;
-	uint32_t pheripheral;
-	uint32_t memory;
-};
 
 struct msm_ois_opcode {
 	uint32_t prog;
