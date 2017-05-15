@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2016, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2017, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -316,13 +316,13 @@ static int camera_v4l2_streamoff(struct file *filep, void *fh,
 	struct camera_v4l2_private *sp = fh_to_private(fh);
 
 	if (msm_is_daemon_present() != false) {
-		camera_pack_event(filep, MSM_CAMERA_SET_PARM,
-			MSM_CAMERA_PRIV_STREAM_OFF, -1, &event);
+	camera_pack_event(filep, MSM_CAMERA_SET_PARM,
+		MSM_CAMERA_PRIV_STREAM_OFF, -1, &event);
 
-		rc = msm_post_event(&event, MSM_POST_EVT_TIMEOUT);
-		if (rc < 0)
-			return rc;
-		rc = camera_check_event_status(&event);
+	rc = msm_post_event(&event, MSM_POST_EVT_TIMEOUT);
+	if (rc < 0)
+		return rc;
+	rc = camera_check_event_status(&event);
 	}
 	mutex_lock(&sp->lock);
 	vb2_streamoff(&sp->vb2_q, buf_type);
@@ -383,16 +383,16 @@ static int camera_v4l2_s_fmt_vid_cap_mplane(struct file *filep, void *fh,
 					user_fmt->plane_sizes[i]);
 
 		if (msm_is_daemon_present() != false) {
-			camera_pack_event(filep, MSM_CAMERA_SET_PARM,
-				MSM_CAMERA_PRIV_S_FMT, -1, &event);
+		camera_pack_event(filep, MSM_CAMERA_SET_PARM,
+			MSM_CAMERA_PRIV_S_FMT, -1, &event);
 
-			rc = msm_post_event(&event, MSM_POST_EVT_TIMEOUT);
-			if (rc < 0)
-				return rc;
+		rc = msm_post_event(&event, MSM_POST_EVT_TIMEOUT);
+		if (rc < 0)
+			return rc;
 
-			rc = camera_check_event_status(&event);
-			if (rc < 0)
-				return rc;
+		rc = camera_check_event_status(&event);
+		if (rc < 0)
+			return rc;
 		}
 		sp->is_vb2_valid = 1;
 	}
@@ -432,13 +432,13 @@ static int camera_v4l2_s_parm(struct file *filep, void *fh,
 		return rc;
 
 	if (msm_is_daemon_present() != false) {
-		rc = msm_post_event(&event, MSM_POST_EVT_TIMEOUT);
-		if (rc < 0)
-			goto error;
+	rc = msm_post_event(&event, MSM_POST_EVT_TIMEOUT);
+	if (rc < 0)
+		goto error;
 
-		rc = camera_check_event_status(&event);
-		if (rc < 0)
-			goto error;
+	rc = camera_check_event_status(&event);
+	if (rc < 0)
+		goto error;
 	}
 	/* use stream_id as stream index */
 	parm->parm.capture.extendedmode = sp->stream_id;
@@ -484,6 +484,9 @@ static long camera_v4l2_vidioc_private_ioctl(struct file *filep, void *fh,
 
 	if (WARN_ON(!k_ioctl || !pvdev))
 		return -EIO;
+
+	if (cmd != VIDIOC_MSM_CAMERA_PRIVATE_IOCTL_CMD)
+		return -EINVAL;
 
 	switch (k_ioctl->id) {
 	case MSM_CAMERA_PRIV_IOCTL_ID_RETURN_BUF: {
@@ -664,16 +667,16 @@ static int camera_v4l2_open(struct file *filep)
 		if (msm_is_daemon_present() != false) {
 			camera_pack_event(filep, MSM_CAMERA_NEW_SESSION,
 				0, -1, &event);
-			rc = msm_post_event(&event, MSM_POST_EVT_TIMEOUT);
-			if (rc < 0) {
+		rc = msm_post_event(&event, MSM_POST_EVT_TIMEOUT);
+		if (rc < 0) {
 				pr_err("%s : NEW_SESSION event failed,rc %d\n",
 					__func__, rc);
-				goto post_fail;
-			}
+			goto post_fail;
+		}
 
-			rc = camera_check_event_status(&event);
+		rc = camera_check_event_status(&event);
 			if (rc < 0)
-				goto post_fail;
+			goto post_fail;
 		}
 		/* Enable power collapse latency */
 		msm_pm_qos_update_request(CAMERA_ENABLE_PC_LATENCY);
@@ -754,7 +757,7 @@ static int camera_v4l2_close(struct file *filep)
 		if (msm_is_daemon_present() != false) {
 			camera_pack_event(filep, MSM_CAMERA_DEL_SESSION,
 				0, -1, &event);
-			msm_post_event(&event, MSM_POST_EVT_TIMEOUT);
+		msm_post_event(&event, MSM_POST_EVT_TIMEOUT);
 		}
 		msm_delete_command_ack_q(pvdev->vdev->num, 0);
 		msm_delete_stream(pvdev->vdev->num, sp->stream_id);

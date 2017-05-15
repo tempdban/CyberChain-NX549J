@@ -1383,7 +1383,7 @@ static int calculate_lra_code(struct qpnp_hap *hap)
 	int rc = 0;
 
 	rc = qpnp_hap_read_reg(hap, &lra_drive_period_code_lo,
-			QPNP_HAP_RATE_CFG1_REG(hap->base));
+				QPNP_HAP_RATE_CFG1_REG(hap->base));
 	if (rc) {
 		dev_err(&hap->spmi->dev,
 				"Error while reading RATE_CFG1 register\n");
@@ -1391,7 +1391,7 @@ static int calculate_lra_code(struct qpnp_hap *hap)
 	}
 
 	rc = qpnp_hap_read_reg(hap, &lra_drive_period_code_hi,
-			QPNP_HAP_RATE_CFG2_REG(hap->base));
+				QPNP_HAP_RATE_CFG2_REG(hap->base));
 	if (rc) {
 		dev_err(&hap->spmi->dev,
 				"Error while reading RATE_CFG2 register\n");
@@ -1487,12 +1487,12 @@ static void update_lra_frequency(struct qpnp_hap *hap)
 		(play_rate_code >= hap->drive_period_code_max_limit))
 		return;
 
-	qpnp_hap_write_reg(hap, &lra_auto_res_lo,
-					QPNP_HAP_RATE_CFG1_REG(hap->base));
+		qpnp_hap_write_reg(hap, &lra_auto_res_lo,
+				QPNP_HAP_RATE_CFG1_REG(hap->base));
 
-	lra_auto_res_hi = lra_auto_res_hi >> 4;
-	qpnp_hap_write_reg(hap, &lra_auto_res_hi,
-					QPNP_HAP_RATE_CFG2_REG(hap->base));
+		lra_auto_res_hi = lra_auto_res_hi >> 4;
+		qpnp_hap_write_reg(hap, &lra_auto_res_hi,
+				QPNP_HAP_RATE_CFG2_REG(hap->base));
 }
 
 static enum hrtimer_restart detect_auto_res_error(struct hrtimer *timer)
@@ -1537,13 +1537,13 @@ static void correct_auto_res_error(struct work_struct *auto_res_err_work)
 			adjusted_lra_play_rate_code[lra_freq_index]
 						& QPNP_HAP_RATE_CFG1_MASK;
 
-		qpnp_hap_write_reg(hap, &lra_code_lo,
-					QPNP_HAP_RATE_CFG1_REG(hap->base));
+	qpnp_hap_write_reg(hap, &lra_code_lo,
+				QPNP_HAP_RATE_CFG1_REG(hap->base));
 
 		lra_code_hi = adjusted_lra_play_rate_code[lra_freq_index]
 						>> QPNP_HAP_RATE_CFG2_SHFT;
 
-		qpnp_hap_write_reg(hap, &lra_code_hi,
+	qpnp_hap_write_reg(hap, &lra_code_hi,
 					QPNP_HAP_RATE_CFG2_REG(hap->base));
 
 		lra_freq_index = (lra_freq_index+1) %

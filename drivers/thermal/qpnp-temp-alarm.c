@@ -453,13 +453,13 @@ static void qpnp_tm_work(struct work_struct *work)
 		stage_old = alarm_state_map[chip->prev_stage];
 	}
 
-	chip->prev_stage = chip->stage;
+		chip->prev_stage = chip->stage;
 
 	if (stage_new != stage_old) {
 		if (chip->subtype == QPNP_TM_SUBTYPE_GEN1)
-			pr_crit("%s: PMIC Temp Alarm - stage=%u, threshold=%u, temperature=%lu mC\n",
-				chip->tm_name, chip->stage, chip->thresh,
-				chip->temperature);
+		pr_crit("%s: PMIC Temp Alarm - stage=%u, threshold=%u, temperature=%lu mC\n",
+			chip->tm_name, chip->stage, chip->thresh,
+			chip->temperature);
 		else
 			pr_crit("%s: PMIC Temp Alarm - stage=%u, state=%u, threshold=%u, temperature=%lu mC\n",
 				chip->tm_name, stage_new, chip->stage,
@@ -490,9 +490,9 @@ static int qpnp_tm_init_reg(struct qpnp_tm_chip *chip)
 	int rc = 0;
 	u8 reg;
 
-	rc = qpnp_tm_read(chip, QPNP_TM_REG_SHUTDOWN_CTRL1, &reg, 1);
-	if (rc < 0)
-		return rc;
+		rc = qpnp_tm_read(chip, QPNP_TM_REG_SHUTDOWN_CTRL1, &reg, 1);
+		if (rc < 0)
+			return rc;
 
 	if (chip->thresh < THRESH_MIN || chip->thresh > THRESH_MAX) {
 		/* Use hardware threshold value if configuration is invalid. */

@@ -370,9 +370,9 @@ int dsi_pll_enable_seq_8996(struct mdss_pll_resources *pll)
 		if (!pll_is_pll_locked_8996(pll)) {
 			pr_err("DSI PLL ndx=%d lock failed!!!\n",
 				pll->index);
-			rc = -EINVAL;
-			goto init_lock_err;
-		}
+		rc = -EINVAL;
+		goto init_lock_err;
+	}
 	}
 
 	if (!pll_use_precal(pll)) {
@@ -872,13 +872,6 @@ static void pll_db_commit_8996(struct mdss_pll_resources *pll,
 	data &= 0x03;
 	MDSS_PLL_REG_W(pll_base, DSIPHY_PLL_KVCO_COUNT2, data);
 
-	/*
-	 * tx_band = pll_postdiv
-	 * 0: divided by 1 <== for now
-	 * 1: divided by 2
-	 * 2: divided by 4
-	 * 3: divided by 8
-	 */
 	data = (((pout->pll_postdiv - 1) << 4) | pdb->in.pll_lpf_res1);
 	MDSS_PLL_REG_W(pll_base, DSIPHY_PLL_PLL_LPF2_POSTDIV, data);
 
@@ -1017,12 +1010,12 @@ int pll_vco_set_rate_8996(struct clk *c, unsigned long rate)
 		pr_debug("retry full sequence\n");
 		slave = pll->slave;
 
-		/* commit slave if split display is enabled */
-		if (slave)
-			pll_db_commit_8996(slave, pdb);
+	/* commit slave if split display is enabled */
+	if (slave)
+		pll_db_commit_8996(slave, pdb);
 
-		/* commit master itself */
-		pll_db_commit_8996(pll, pdb);
+	/* commit master itself */
+	pll_db_commit_8996(pll, pdb);
 	}
 
 	mdss_pll_resource_enable(pll, false);

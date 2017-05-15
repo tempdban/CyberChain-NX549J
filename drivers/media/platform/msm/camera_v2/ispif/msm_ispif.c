@@ -527,8 +527,8 @@ int msm_ispif_get_clk_info(struct ispif_device *ispif_dev,
 			temp_clks[j] = clks[i];
 			j++;
 			num_ahb_clk++;
-		}
 	}
+		}
 	for (i = 0; i < num_clks; i++) {
 		if (!strnstr(clk_info[i].clk_name,
 			"ahb", strlen(clk_info[i].clk_name))) {
@@ -537,12 +537,12 @@ int msm_ispif_get_clk_info(struct ispif_device *ispif_dev,
 			j++;
 			non_ahb_clk++;
 		}
-	}
+		}
 
 	for (i = 0; i < num_clks; i++) {
 		clk_info[i] = temp_clk_info[i];
 		clks[i] = temp_clks[i];
-	}
+		}
 	kfree(temp_clk_info);
 	kfree(temp_clks);
 
@@ -904,7 +904,7 @@ static int msm_ispif_config(struct ispif_device *ispif,
 		}
 
 		if (ispif->csid_version >= CSID_VERSION_V30)
-			msm_ispif_select_clk_mux(ispif, intftype,
+				msm_ispif_select_clk_mux(ispif, intftype,
 				params->entries[i].csid, vfe_intf);
 
 		rc = msm_ispif_validate_intf_status(ispif, intftype, vfe_intf);
@@ -1323,8 +1323,15 @@ static inline void msm_ispif_read_irq_status(struct ispif_irq_status *out,
 	}
 
 	if (fatal_err == true) {
-		pr_err("%s: fatal error, stop ispif immediately\n", __func__);
+		pr_err_ratelimited("%s: fatal error, stop ispif immediately\n",
+			__func__);
 		for (i = 0; i < ispif->vfe_info.num_vfe; i++) {
+			msm_camera_io_w(0x0,
+				ispif->base + ISPIF_VFE_m_IRQ_MASK_0(i));
+			msm_camera_io_w(0x0,
+				ispif->base + ISPIF_VFE_m_IRQ_MASK_1(i));
+			msm_camera_io_w(0x0,
+				ispif->base + ISPIF_VFE_m_IRQ_MASK_2(i));
 			msm_camera_io_w(ISPIF_STOP_INTF_IMMEDIATELY,
 				ispif->base + ISPIF_VFE_m_INTF_CMD_0(i));
 			msm_camera_io_w(ISPIF_STOP_INTF_IMMEDIATELY,
@@ -1400,7 +1407,7 @@ static int msm_ispif_init(struct ispif_device *ispif,
 	rc = msm_ispif_reset(ispif);
 	if (rc)
 		goto error_ahb;
-	ispif->ispif_state = ISPIF_POWER_UP;
+		ispif->ispif_state = ISPIF_POWER_UP;
 	return 0;
 
 error_ahb:

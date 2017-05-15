@@ -705,57 +705,57 @@ static int cpr3_regulator_init_cpr4(struct cpr3_controller *ctrl)
 	u64 temp;
 
 	if (ctrl->supports_hw_closed_loop) {
-		if (ctrl->saw_use_unit_mV)
-			pmic_step_size = ctrl->step_volt / 1000;
-		cpr3_masked_write(ctrl, CPR4_REG_MARGIN_ADJ_CTL,
-				  CPR4_MARGIN_ADJ_CTL_PMIC_STEP_SIZE_MASK,
-				  (pmic_step_size
-				  << CPR4_MARGIN_ADJ_CTL_PMIC_STEP_SIZE_SHIFT));
+	if (ctrl->saw_use_unit_mV)
+		pmic_step_size = ctrl->step_volt / 1000;
+	cpr3_masked_write(ctrl, CPR4_REG_MARGIN_ADJ_CTL,
+				CPR4_MARGIN_ADJ_CTL_PMIC_STEP_SIZE_MASK,
+				(pmic_step_size
+				<< CPR4_MARGIN_ADJ_CTL_PMIC_STEP_SIZE_SHIFT));
 
-		cpr3_masked_write(ctrl, CPR4_REG_SAW_ERROR_STEP_LIMIT,
-				  CPR4_SAW_ERROR_STEP_LIMIT_DN_MASK,
-				  (ctrl->down_error_step_limit
-					<< CPR4_SAW_ERROR_STEP_LIMIT_DN_SHIFT));
+	cpr3_masked_write(ctrl, CPR4_REG_SAW_ERROR_STEP_LIMIT,
+				CPR4_SAW_ERROR_STEP_LIMIT_DN_MASK,
+				(ctrl->down_error_step_limit
+				<< CPR4_SAW_ERROR_STEP_LIMIT_DN_SHIFT));
 
-		cpr3_masked_write(ctrl, CPR4_REG_SAW_ERROR_STEP_LIMIT,
-				  CPR4_SAW_ERROR_STEP_LIMIT_UP_MASK,
-				  (ctrl->up_error_step_limit
-					<< CPR4_SAW_ERROR_STEP_LIMIT_UP_SHIFT));
+	cpr3_masked_write(ctrl, CPR4_REG_SAW_ERROR_STEP_LIMIT,
+				CPR4_SAW_ERROR_STEP_LIMIT_UP_MASK,
+				(ctrl->up_error_step_limit
+				<< CPR4_SAW_ERROR_STEP_LIMIT_UP_SHIFT));
 
-		/*
+	/*
 		 * Enable thread aggregation regardless of which threads are
 		 * enabled or disabled.
-		 */
-		cpr3_masked_write(ctrl, CPR4_REG_CPR_TIMER_CLAMP,
-				  CPR4_CPR_TIMER_CLAMP_THREAD_AGGREGATION_EN,
-				  CPR4_CPR_TIMER_CLAMP_THREAD_AGGREGATION_EN);
+	 */
+	cpr3_masked_write(ctrl, CPR4_REG_CPR_TIMER_CLAMP,
+				CPR4_CPR_TIMER_CLAMP_THREAD_AGGREGATION_EN,
+				CPR4_CPR_TIMER_CLAMP_THREAD_AGGREGATION_EN);
 
-		switch (ctrl->thread_count) {
-		case 0:
-			/* Disable both threads */
-			cpr3_masked_write(ctrl, CPR4_REG_CPR_MASK_THREAD(0),
+	switch (ctrl->thread_count) {
+	case 0:
+		/* Disable both threads */
+		cpr3_masked_write(ctrl, CPR4_REG_CPR_MASK_THREAD(0),
 				CPR4_CPR_MASK_THREAD_DISABLE_THREAD
-				    | CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK,
+				| CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK,
 				CPR4_CPR_MASK_THREAD_DISABLE_THREAD
-				    | CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK);
+				| CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK);
 
-			cpr3_masked_write(ctrl, CPR4_REG_CPR_MASK_THREAD(1),
+		cpr3_masked_write(ctrl, CPR4_REG_CPR_MASK_THREAD(1),
 				CPR4_CPR_MASK_THREAD_DISABLE_THREAD
-				    | CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK,
+				| CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK,
 				CPR4_CPR_MASK_THREAD_DISABLE_THREAD
-				    | CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK);
-			break;
-		case 1:
-			/* Disable unused thread */
-			thread_id = ctrl->thread[0].thread_id ? 0 : 1;
+				| CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK);
+		break;
+	case 1:
+		/* Disable unused thread */
+		thread_id = ctrl->thread[0].thread_id ? 0 : 1;
 			cpr3_masked_write(ctrl,
 				CPR4_REG_CPR_MASK_THREAD(thread_id),
 				CPR4_CPR_MASK_THREAD_DISABLE_THREAD
-				    | CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK,
+				| CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK,
 				CPR4_CPR_MASK_THREAD_DISABLE_THREAD
-				    | CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK);
-			break;
-		}
+				| CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK);
+		break;
+	}
 	}
 
 	if (!ctrl->allow_core_count_adj && !ctrl->allow_temp_adj
@@ -768,9 +768,9 @@ static int cpr3_regulator_init_cpr4(struct cpr3_controller *ctrl)
 	}
 
 	if (ctrl->supports_hw_closed_loop)
-		cpr3_masked_write(ctrl, CPR4_REG_MARGIN_ADJ_CTL,
-				  CPR4_MARGIN_ADJ_CTL_TIMER_SETTLE_VOLTAGE_EN,
-				  CPR4_MARGIN_ADJ_CTL_TIMER_SETTLE_VOLTAGE_EN);
+	cpr3_masked_write(ctrl, CPR4_REG_MARGIN_ADJ_CTL,
+			CPR4_MARGIN_ADJ_CTL_TIMER_SETTLE_VOLTAGE_EN,
+			CPR4_MARGIN_ADJ_CTL_TIMER_SETTLE_VOLTAGE_EN);
 
 	cpr3_masked_write(ctrl, CPR4_REG_MARGIN_ADJ_CTL,
 			CPR4_MARGIN_ADJ_CTL_KV_MARGIN_ADJ_STEP_QUOT_MASK,
@@ -1010,14 +1010,15 @@ static int cpr3_controller_program_sdelta(struct cpr3_controller *ctrl)
 		| CPR4_MARGIN_ADJ_CTL_BOOST_EN,
 		max_core_count << CPR4_MARGIN_ADJ_CTL_MAX_NUM_CORES_SHIFT
 		| ((sdelta->allow_core_count_adj || sdelta->allow_boost)
-			? CPR4_MARGIN_ADJ_CTL_CORE_ADJ_EN : 0)
-		| ((sdelta->allow_temp_adj && ctrl->supports_hw_closed_loop)
+		? CPR4_MARGIN_ADJ_CTL_CORE_ADJ_EN : 0)
+		| ((sdelta->allow_temp_adj && ctrl->supports_hw_closed_loop
+			&& sdelta->allow_core_count_adj)
 			? CPR4_MARGIN_ADJ_CTL_TEMP_ADJ_EN : 0)
 		| (((ctrl->use_hw_closed_loop && !sdelta->allow_boost)
 		    || !ctrl->supports_hw_closed_loop)
-			? CPR4_MARGIN_ADJ_CTL_KV_MARGIN_ADJ_EN : 0)
+		? CPR4_MARGIN_ADJ_CTL_KV_MARGIN_ADJ_EN : 0)
 		| (sdelta->allow_boost
-			?  CPR4_MARGIN_ADJ_CTL_BOOST_EN : 0));
+		?  CPR4_MARGIN_ADJ_CTL_BOOST_EN : 0));
 
 	/*
 	 * Ensure that all previous CPR register writes have completed before
@@ -1482,26 +1483,26 @@ static int cpr3_regulator_init_ctrl(struct cpr3_controller *ctrl)
 				ctrl->proc_clock_throttle);
 		}
 
-		if ((ctrl->use_hw_closed_loop ||
-		     ctrl->ctrl_type == CPR_CTRL_TYPE_CPR4) &&
-		    ctrl->ctrl_type != CPR_CTRL_TYPE_CPRH) {
-			rc = regulator_enable(ctrl->vdd_limit_regulator);
+	if ((ctrl->use_hw_closed_loop ||
+	     ctrl->ctrl_type == CPR_CTRL_TYPE_CPR4) &&
+	    ctrl->ctrl_type != CPR_CTRL_TYPE_CPRH) {
+		rc = regulator_enable(ctrl->vdd_limit_regulator);
+		if (rc) {
+			cpr3_err(ctrl, "CPR limit regulator enable failed, rc=%d\n",
+				rc);
+			return rc;
+		}
+
+		if (ctrl->ctrl_type == CPR_CTRL_TYPE_CPR3) {
+				rc = msm_spm_avs_enable_irq(0,
+							   MSM_SPM_AVS_IRQ_MAX);
 			if (rc) {
-				cpr3_err(ctrl, "CPR limit regulator enable failed, rc=%d\n",
+				cpr3_err(ctrl, "could not enable max IRQ, rc=%d\n",
 					rc);
 				return rc;
 			}
-
-			if (ctrl->ctrl_type == CPR_CTRL_TYPE_CPR3) {
-				rc = msm_spm_avs_enable_irq(0,
-							   MSM_SPM_AVS_IRQ_MAX);
-				if (rc) {
-					cpr3_err(ctrl, "could not enable max IRQ, rc=%d\n",
-						rc);
-					return rc;
-				}
-			}
 		}
+	}
 	}
 
 	if (ctrl->ctrl_type == CPR_CTRL_TYPE_CPR4) {
@@ -3340,7 +3341,8 @@ static int cpr3_regulator_measure_aging(struct cpr3_controller *ctrl,
 		if (rc) {
 			cpr3_err(ctrl, "failed to clear CPR4 configuration,rc=%d\n",
 				rc);
-			goto cleanup;
+			kfree(quot_delta_results);
+			return rc;
 		}
 	}
 
@@ -5791,6 +5793,31 @@ int cpr3_regulator_resume(struct cpr3_controller *ctrl)
 }
 
 /**
+ * cpr3_regulator_cpu_hotplug_callback() - reset CPR IRQ affinity when a CPU is
+ *		brought online via hotplug
+ * @nb:			Pointer to the notifier block
+ * @action:		hotplug action
+ * @hcpu:		long value corresponding to the CPU number
+ *
+ * Return: NOTIFY_OK
+ */
+static int cpr3_regulator_cpu_hotplug_callback(struct notifier_block *nb,
+					    unsigned long action, void *hcpu)
+{
+	struct cpr3_controller *ctrl = container_of(nb, struct cpr3_controller,
+					cpu_hotplug_notifier);
+	int cpu = (long)hcpu;
+
+	action &= ~CPU_TASKS_FROZEN;
+
+	if (action == CPU_ONLINE
+	    && cpumask_test_cpu(cpu, &ctrl->irq_affinity_mask))
+		irq_set_affinity(ctrl->irq, &ctrl->irq_affinity_mask);
+
+	return NOTIFY_OK;
+}
+
+/**
  * cpr3_regulator_validate_controller() - verify the data passed in via the
  *		cpr3_controller data structure
  * @ctrl:		Pointer to the CPR3 controller
@@ -5930,8 +5957,7 @@ int cpr3_regulator_register(struct platform_device *pdev,
 		}
 	}
 
-	if (ctrl->supports_hw_closed_loop && ctrl->ctrl_type !=
-	    CPR_CTRL_TYPE_CPRH) {
+	if (ctrl->supports_hw_closed_loop) {
 		rc = msm_spm_probe_done();
 		if (rc) {
 			if (rc != -EPROBE_DEFER)
@@ -6021,6 +6047,14 @@ int cpr3_regulator_register(struct platform_device *pdev,
 		}
 	}
 
+	if (ctrl->irq && !cpumask_empty(&ctrl->irq_affinity_mask)) {
+		irq_set_affinity(ctrl->irq, &ctrl->irq_affinity_mask);
+
+		ctrl->cpu_hotplug_notifier.notifier_call
+			= cpr3_regulator_cpu_hotplug_callback;
+		register_hotcpu_notifier(&ctrl->cpu_hotplug_notifier);
+	}
+
 	mutex_lock(&cpr3_controller_list_mutex);
 	cpr3_regulator_debugfs_ctrl_add(ctrl);
 	list_add(&ctrl->list, &cpr3_controller_list);
@@ -6059,6 +6093,9 @@ int cpr3_regulator_unregister(struct cpr3_controller *ctrl)
 	list_del(&ctrl->list);
 	cpr3_regulator_debugfs_ctrl_remove(ctrl);
 	mutex_unlock(&cpr3_controller_list_mutex);
+
+	if (ctrl->irq && !cpumask_empty(&ctrl->irq_affinity_mask))
+		unregister_hotcpu_notifier(&ctrl->cpu_hotplug_notifier);
 
 	if (ctrl->ctrl_type == CPR_CTRL_TYPE_CPR4)
 		rc = cpr3_ctrl_clear_cpr4_config(ctrl);

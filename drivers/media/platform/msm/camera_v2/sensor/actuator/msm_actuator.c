@@ -571,16 +571,8 @@ static int32_t msm_actuator_move_focus(
 	int32_t num_steps = move_params->num_steps;
 	struct msm_camera_i2c_reg_setting reg_setting;
 
-    /*Allocate memory for damping parameters of all regions*/
-    ringing_params_kernel = kmalloc(
-        sizeof(struct damping_params_t)*(a_ctrl->region_size),
-        GFP_KERNEL);
-    if (!ringing_params_kernel) {
-        pr_err("kmalloc for damping parameters failed\n");
-        return -EFAULT;
-    }
-    
     preempt_disable();//jixd add for high priority
+
 	CDBG("called, dir %d, num_steps %d\n", dir, num_steps);
 
     //ZTEMT:wangdeyong modify for af_write_fail    --start
@@ -603,20 +595,17 @@ static int32_t msm_actuator_move_focus(
 		(sign_dir < MSM_ACTUATOR_MOVE_SIGNED_FAR)) {
 		pr_err("Invalid sign_dir = %d\n", sign_dir);
         preempt_enable();//jixd add for high priority
-        kfree(ringing_params_kernel);
 		return -EFAULT;
 	}
 	if ((dir > MOVE_FAR) || (dir < MOVE_NEAR)) {
 		pr_err("Invalid direction = %d\n", dir);
         preempt_enable();//jixd add for high priority
-        kfree(ringing_params_kernel);
 		return -EFAULT;
 	}
 	if (dest_step_pos > a_ctrl->total_steps) {
 		pr_err("Step pos greater than total steps = %d\n",
 		dest_step_pos);
         preempt_enable();//jixd add for high priority
-        kfree(ringing_params_kernel);
 		return -EFAULT;
 	}
 	if ((a_ctrl->region_size <= 0) ||
@@ -625,7 +614,6 @@ static int32_t msm_actuator_move_focus(
 		pr_err("Invalid-region size = %d, ringing_params = %pK\n",
 		a_ctrl->region_size, move_params->ringing_params);
         preempt_enable();//jixd add for high priority
-        kfree(ringing_params_kernel);
 		return -EFAULT;
 	}
 	/*Allocate memory for damping parameters of all regions*/
@@ -1002,7 +990,7 @@ static int32_t msm_actuator_init_step_table(struct msm_actuator_ctrl_t *a_ctrl,
 	a_ctrl->max_code_size = max_code_size;
 
 	/* free the step_position_table to allocate a new one */
-	kfree(a_ctrl->step_position_table);
+		kfree(a_ctrl->step_position_table);
 	a_ctrl->step_position_table = NULL;
 
 	if (set_info->af_tuning_params.total_steps
@@ -1508,8 +1496,8 @@ static int32_t msm_actuator_config(struct msm_actuator_ctrl_t *a_ctrl,
 	case CFG_MOVE_FOCUS:
 		if (a_ctrl->func_tbl &&
 			a_ctrl->func_tbl->actuator_move_focus)
-			rc = a_ctrl->func_tbl->actuator_move_focus(a_ctrl,
-				&cdata->cfg.move);
+		rc = a_ctrl->func_tbl->actuator_move_focus(a_ctrl,
+			&cdata->cfg.move);
 		if (rc < 0)
 			pr_err("move focus failed %d\n", rc);
 		break;
@@ -1522,8 +1510,8 @@ static int32_t msm_actuator_config(struct msm_actuator_ctrl_t *a_ctrl,
 	case CFG_SET_POSITION:
 		if (a_ctrl->func_tbl &&
 			a_ctrl->func_tbl->actuator_set_position)
-			rc = a_ctrl->func_tbl->actuator_set_position(a_ctrl,
-				&cdata->cfg.setpos);
+		rc = a_ctrl->func_tbl->actuator_set_position(a_ctrl,
+			&cdata->cfg.setpos);
 		if (rc < 0)
 			pr_err("actuator_set_position failed %d\n", rc);
 		break;
