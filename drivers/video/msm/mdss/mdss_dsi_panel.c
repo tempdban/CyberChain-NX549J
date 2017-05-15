@@ -318,6 +318,11 @@ static void mdss_dsi_panel_bklt_dcs(struct mdss_dsi_ctrl_pdata *ctrl, int level)
 	} else {
 	cmdreq.cmds = &backlight_cmd;
 	cmdreq.cmds_cnt = 1;
+	}
+#else
+	cmdreq.cmds = &backlight_cmd;
+	cmdreq.cmds_cnt = 1;
+#endif
 	cmdreq.flags = CMD_REQ_COMMIT | CMD_CLK_CTRL;
 	cmdreq.rlen = 0;
 	cmdreq.cb = NULL;
