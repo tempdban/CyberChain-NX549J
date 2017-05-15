@@ -500,6 +500,8 @@ static int msm_pcm_volume_ctl_put(struct snd_kcontrol *kcontrol,
 		goto exit;
 	}
 	rc = pcm_loopback_set_volume(prtd, volume);
+
+exit:
 	return rc;
 }
 
